@@ -1,9 +1,9 @@
-const fs = require('fs');
-const [countInput, pieListInput] = fs
-  .readFileSync('/dev/stdin')
-  .toString()
-  .trim()
-  .split('\n');
+// const fs = require('fs');
+// const [countInput, pieListInput] = fs
+// .readFileSync('/dev/stdin')
+// .toString()
+// .trim()
+// .split('\n');
 
 const solve = (countInput, pieListInput) => {
   const count = countInput.split(' ').map(Number).pop();
@@ -35,4 +35,4 @@ const solve = (countInput, pieListInput) => {
   return max;
 };
 
-console.log(solve(countInput, pieListInput));
+// console.log(solve(countInput, pieListInput));

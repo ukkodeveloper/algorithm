@@ -1,4 +1,4 @@
-const input = Number(require('fs').readFileSync(0));
+// const input = Number(require('fs').readFileSync(0));
 
 const solve = (input) => {
   const memo = [0];
@@ -16,4 +16,4 @@ const solve = (input) => {
   return memo.pop();
 };
 
-console.log(solve(input));
+// console.log(solve(input));
