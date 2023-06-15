@@ -130,5 +130,30 @@ const flatten = (acc, arr) => {
 };
 
 flatten([], [1, [2, [3, 4], [[5]]]]); //?
-// flatten([[1],[2],[3]]) // [1,2,3]
-// flatten([[[[1], [[[2]]], [[[[[[[3]]]]]]]]]]) // [1,2,3
+flatten([], [[1], [2], [3]]); //?
+flatten([], [[[[1], [[[2]]], [[[[[[[3]]]]]]]]]]); //?
+
+// problem9
+
+const capitalizeHelper = (cur, arr) => {
+  if (arr.length === 0) return cur;
+
+  const word = arr.pop();
+  return capitalizeHelper([word[0].toUpperCase() + word.slice(1), ...cur], arr);
+};
+capitalizeHelper([], ['car', 'taco', 'banana']); //?
+
+const reverseString = (s) => {
+  let count = s.length;
+  const helper = (s) => {
+    if (count === 1) return s;
+    count--;
+
+    const a = s.pop();
+    s.unshift(a);
+    return helper(s);
+  };
+  return helper(s);
+};
+
+reverseString(['h', 'e', 'l', 'l', 'o']); //?
