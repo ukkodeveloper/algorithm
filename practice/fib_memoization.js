@@ -19,3 +19,13 @@ const fib = memoize((n) => {
 
   return fib(n - 2) + fib(n - 1);
 });
+
+// 꼬리재귀
+const fibonacci = (n, current = 0, next = 1) => {
+  if (n === 0) {
+    return current;
+  }
+  return fibonacci(n - 1, next, current + next);
+};
+
+fibonacci(2); //?
