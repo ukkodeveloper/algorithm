@@ -1,56 +1,91 @@
-const rates = [0.1, 0.2, 0.3, 0.4];
-
-function calculateTotalPrice(userRate, ratesByEmoticon, emoticons) {
-  return ratesByEmoticon.reduce((acc, rate, index) => {
-    if (rate >= userRate / 100) {
-      return acc + (1 - rate) * emoticons[index];
-    } else {
-      return acc;
-    }
-  }, 0);
-}
+const RATES = [0.1, 0.2, 0.3, 0.4];
 
 function solution(users, emoticons) {
-  let maxUsers = 0;
-  let maxRevenue = 0;
+  const rateCombinations = generateCombinations(RATES, emoticons.length);
+  return getMaxResult(users, rateCombinations, emoticons);
+}
 
-  const findBestRateCombination = (currentRates) => {
-    if (currentRates.length === emoticons.length) {
-      let currentUserCount = 0;
-      let currentRevenue = 0;
-
-      users.forEach(([userRate, userThreshold]) => {
-        const totalPrice = calculateTotalPrice(
-          userRate,
-          currentRates,
-          emoticons
-        );
-
-        if (totalPrice >= userThreshold) {
-          currentUserCount += 1;
-        } else {
-          currentRevenue += totalPrice;
-        }
-      });
-
-      if (currentUserCount > maxUsers) {
-        maxUsers = currentUserCount;
-        maxRevenue = currentRevenue;
-      } else if (currentUserCount === maxUsers) {
-        maxRevenue = Math.max(maxRevenue, currentRevenue);
-      }
-
+function* generateCombinations(elements, length) {
+  function* helper(combination) {
+    if (combination.length === length) {
+      yield combination;
       return;
     }
 
-    rates.forEach((rate) => {
-      findBestRateCombination([rate, ...currentRates]);
-    });
-  };
+    for (const element of elements) {
+      yield* helper([...combination, element]);
+    }
+  }
 
-  findBestRateCombination([]);
+  yield* helper([]);
+}
 
-  return [maxUsers, maxRevenue];
+function combineEmoticonWithRate(emoticons, rateCombination) {
+  if (emoticons.length !== rateCombination.length) {
+    throw new Error(`[ERROR] 두 인자의 길이가 같아야 합니다.`);
+  }
+
+  return emoticons.map((emoticon, idx) => [emoticon, rateCombination[idx]]);
+}
+
+function getCurrentResult(users, emoticonsPriceWithRate) {
+  return users.reduce(
+    (result, [rateOfUser, threshold]) => {
+      const userPrice = getUserPrice(emoticonsPriceWithRate, rateOfUser);
+
+      if (userPrice >= threshold) {
+        return Object.assign(result, {
+          subscriberCount: result.subscriberCount + 1,
+        });
+      }
+
+      return Object.assign(result, {
+        totalRevenue: result.totalRevenue + userPrice,
+      });
+    },
+    {
+      subscriberCount: 0,
+      totalRevenue: 0,
+    }
+  );
+}
+
+function getUserPrice(emoticonsPriceWithRate, rateOfUser) {
+  return emoticonsPriceWithRate.reduce(
+    (totalPrice, [emoticonPrice, emoticonRate]) => {
+      if (rateOfUser / 100 <= emoticonRate) {
+        return totalPrice + (1 - emoticonRate) * emoticonPrice;
+      }
+
+      return totalPrice;
+    },
+    0
+  );
+}
+
+function getMaxResult(users, rateCombinations, emoticons) {
+  let maxSubscriberCount = 0;
+  let maxTotalRevenue = 0;
+
+  for (const rateCombination of rateCombinations) {
+    const { subscriberCount, totalRevenue } = getCurrentResult(
+      users,
+      combineEmoticonWithRate(emoticons, rateCombination)
+    );
+
+    if (subscriberCount === maxSubscriberCount) {
+      maxTotalRevenue = Math.max(totalRevenue, maxTotalRevenue);
+      continue;
+    }
+
+    if (subscriberCount > maxSubscriberCount) {
+      maxSubscriberCount = subscriberCount;
+      maxTotalRevenue = totalRevenue;
+      continue;
+    }
+  }
+
+  return [maxSubscriberCount, maxTotalRevenue];
 }
 
 solution(
@@ -64,4 +99,4 @@ solution(
     [32, 6900],
   ],
   [1300, 1500, 1600, 4900]
-); //?
+);
