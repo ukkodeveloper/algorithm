@@ -1,44 +1,51 @@
 const setZeroes = (matrix) => {
-  const rowLength = matrix.length;
-  const colLength = matrix[0].length;
+  let firstRowHasZero = false;
+  let firstColHasZero = false;
 
-  const colsToZero = [];
-  const rowsToZero = [];
+  // step1. check if first col, row has zero
+  for (let i = 0; i < matrix[0].length; i++) {
+    if (matrix[0][i] === 0) {
+      firstRowHasZero = true;
+      break;
+    }
+  }
 
-  // step1. 0이 포함된 row와 col index를 저장한다.
-  matrix.forEach((row, rowIndex) => {
-    row.forEach((item, colIndex) => {
-      if (item === 0) {
-        colsToZero.push(colIndex);
-        rowsToZero.push(rowIndex);
+  for (let i = 0; i < matrix.length; i++) {
+    if (matrix[i][0] === 0) {
+      firstColHasZero = true;
+      break;
+    }
+  }
+
+  // step2. set zero flag to first row and col
+  for (let row = 1; row < matrix.length; row++) {
+    for (let col = 1; col < matrix[0].length; col++) {
+      if (matrix[row][col] === 0) {
+        matrix[row][0] = 0;
+        matrix[0][col] = 0;
       }
-    });
-  });
-
-  // step2. 저장된 index 리스트를 순회하면서 0으로 변경한다.
-  colsToZero.forEach((colIndex) => {
-    for (let i = 0; i < rowLength; i++) {
-      matrix[i][colIndex] = 0;
     }
-  });
+  }
 
-  rowsToZero.forEach((rowIndex) => {
-    for (let i = 0; i < colLength; i++) {
-      matrix[rowIndex][i] = 0;
+  // step3. set item to zero by flags
+  for (let row = 1; row < matrix.length; row++) {
+    for (let col = 1; col < matrix[0].length; col++) {
+      if (matrix[row][0] === 0 || matrix[0][col] === 0) {
+        matrix[row][col] = 0;
+      }
     }
-  });
+  }
 
-  return matrix;
+  // step4. first row, col item to zero by flags
+  if (firstRowHasZero) {
+    for (let i = 0; i < matrix[0].length; i++) {
+      matrix[0][i] = 0;
+    }
+  }
+
+  if (firstColHasZero) {
+    for (let i = 0; i < matrix.length; i++) {
+      matrix[i][0] = 0;
+    }
+  }
 };
-
-setZeroes([
-  [1, 1, 1],
-  [1, 0, 1],
-  [1, 1, 1],
-]); //?
-
-setZeroes([
-  [0, 1, 2, 0],
-  [3, 4, 5, 2],
-  [1, 3, 1, 5],
-]); //?
