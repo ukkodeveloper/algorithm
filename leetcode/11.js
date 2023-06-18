@@ -1,16 +1,15 @@
 const maxArea = (heights) => {
+  let left = 0;
+  let right = heights.length - 1;
   let result = 0;
 
-  for (let i = 0; i < heights.length - 1; i++) {
-    const left = heights[i];
-    let maxRight = 0;
-
-    for (let j = heights.length - 1; j > i; j--) {
-      const right = heights[j];
-      if (right < maxRight) continue;
-
-      const area = (j - i) * Math.min(left, right);
-      result = Math.max(area, result);
+  while (left < right) {
+    const area = (right - left) * Math.min(heights[left], heights[right]);
+    result = Math.max(area, result);
+    if (heights[left] >= heights[right]) {
+      right -= 1;
+    } else {
+      left += 1;
     }
   }
 
