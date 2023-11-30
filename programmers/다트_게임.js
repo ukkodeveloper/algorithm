@@ -1,11 +1,9 @@
 function solution(dartResult) {
-  let answer = 0;
   const bonus = {
     S: 1,
     D: 2,
     T: 3,
   };
-
   const scoreBoard = [];
   //1. parsing
   const results = dartResult.match(/(10|[0-9])[SDT][*#]?/g);
